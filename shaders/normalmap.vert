@@ -18,12 +18,11 @@ void main() {
   outUV       = inUV;
   gl_Position = u.proj * u.view * world;
 
-  // TODO(TASK 2a)
   // The tangent frame in world space. A normal is turned by the normal matrix,
   // transpose(inverse(mat3(u.model))); a tangent lies along the surface, so it is
   // turned by mat3(u.model) like any direction. B = cross(N, T) * inTangent.w.
   // For now every output is the object-space normal: no tangent frame at all.
-  outNormal    = inNormal;
-  outTangent   = inNormal;
-  outBitangent = inNormal;
+  outNormal    = transpose(inverse(mat3(u.model))) * inNormal;
+  outTangent   = mat3(u.model) * inTangent.xyz;
+  outBitangent = cross(outNormal, outTangent) * inTangent.w;
 }
